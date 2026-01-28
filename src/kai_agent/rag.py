@@ -55,7 +55,6 @@ class ConversationalAnalyst:
         
         TASK: Rewrite the CURRENT QUERY to be standalone and explicit, resolving any pronouns (it, that, he) using the PREVIOUS CONVERSATION. Do not answer the question, just rewrite it.
         
-        STANDALONE QUERY:
         """
         
         try:

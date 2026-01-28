@@ -84,7 +84,7 @@ Run the unit test suite:
 
 Bash
 poetry run pytest
-
+```
 --- 
 ### License
 MIT

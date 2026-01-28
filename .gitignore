@@ -1,0 +1,72 @@
+# --- Python General ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# --- Virtual Environments ---
+# Poetry usually stores these centrally, but if you created one locally:
+.venv/
+env/
+venv/
+ENV/
+
+# --- Environment Variables (CRITICAL) ---
+# Never commit your API keys
+.env
+.env.local
+.env.*
+
+# --- IDE & OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Testing & Quality Assurance ---
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# --- Project Specific: Data & Logs ---
+# Ignore raw OPNsense logs and training data
+data/*.log
+data/*.txt
+data/*.jsonl
+*.log
+
+# --- Project Specific: Database & Docker Volumes ---
+# Do not commit your Vector DB data
+volumes/
+kai_agent_db/
+milvus_data/
+
+# --- Project Specific: AI Model Artifacts ---
+# Day 7 Fine-Tuning outputs (Too large for Git)
+outputs/
+lora_model/
+*.pt
+*.pth
+*.bin
+*.safetensors
+wandb/

@@ -53,6 +53,7 @@ htmlcov/
 data/*.log
 data/*.txt
 data/*.jsonl
+data/*.json
 *.log
 
 # --- Project Specific: Database & Docker Volumes ---

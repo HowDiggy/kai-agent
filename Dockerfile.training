@@ -1,0 +1,22 @@
+# 1. Use the official NVIDIA PyTorch image for ARM64/DGX
+# This includes CUDA, PyTorch, and all build tools pre-configured.
+FROM nvcr.io/nvidia/pytorch:25.12-py3
+
+# 2. Set the working directory inside the container
+WORKDIR /workspace
+
+# 3. Install Unsloth dependencies
+# We use --no-deps or specific flags to avoid breaking the 
+# pre-installed, highly-optimized version of PyTorch provided by NVIDIA.
+RUN pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
+
+# 4. Install other required libraries for our training script
+# Note: xformers is often pre-installed in these images, but we ensure TRL is there.
+RUN pip install --no-deps trl peft accelerate bitsandbytes
+
+# 5. (Optional) Fix for a common bitsandbytes issue on non-standard hardware
+ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64"
+
+
+# Force bitsandbytes to use the CUDA 13.0 binary
+ENV BNB_CUDA_VERSION=130

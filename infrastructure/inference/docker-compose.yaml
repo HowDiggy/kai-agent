@@ -1,0 +1,40 @@
+services:
+  kai-inference:
+    image: nvcr.io/nvidia/vllm:25.11-py3
+    container_name: kai-log-parser
+    runtime: nvidia
+    restart: unless-stopped
+    
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}
+      # Minimal caching needed for local model, but good practice
+      - XDG_CACHE_HOME=/root/.cache
+      
+    volumes:
+      # CRITICAL: Point this to where you saved the merged model on Day 9
+      - /home/paulo/projects/kai-finetune/merged_model:/model
+      - /dev/shm:/dev/shm
+    
+    ports:
+      - "8005:8000" # Host 8005 -> Container 8000
+    
+    command: >
+      vllm serve /model
+      --dtype float16
+      --served-model-name kai-log-parser
+      --max-model-len 2048
+      --gpu-memory-utilization 0.25
+      --tensor-parallel-size 1
+      --enforce-eager
+      --trust-remote-code
+    
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+    shm_size: '16gb'

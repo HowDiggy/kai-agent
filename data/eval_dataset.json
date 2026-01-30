@@ -1,0 +1,102 @@
+[
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[6646]: Failed password for invalid user guest from 192.168.1.5 port 6340 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 6646, \"event_type\": \"authentication_failure\", \"user\": \"guest\", \"src_ip\": \"192.168.1.5\", \"port\": 6340}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[2196]: Failed password for invalid user admin from 192.168.1.5 port 7708 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 2196, \"event_type\": \"authentication_failure\", \"user\": \"admin\", \"src_ip\": \"192.168.1.5\", \"port\": 7708}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[5429]: Failed password for invalid user deploy from 10.0.0.200 port 9867 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 5429, \"event_type\": \"authentication_failure\", \"user\": \"deploy\", \"src_ip\": \"10.0.0.200\", \"port\": 9867}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[6175]: Failed password for invalid user root from 2001:db8::1 port 5484 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 6175, \"event_type\": \"authentication_failure\", \"user\": \"root\", \"src_ip\": \"2001:db8::1\", \"port\": 5484}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[9360]: Failed password for invalid user paulo from 192.168.1.5 port 27485 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 9360, \"event_type\": \"authentication_failure\", \"user\": \"paulo\", \"src_ip\": \"192.168.1.5\", \"port\": 27485}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[6201]: Failed password for invalid user paulo from 172.16.0.55 port 33403 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 6201, \"event_type\": \"authentication_failure\", \"user\": \"paulo\", \"src_ip\": \"172.16.0.55\", \"port\": 33403}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[9854]: Failed password for invalid user guest from 10.0.0.200 port 65172 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 9854, \"event_type\": \"authentication_failure\", \"user\": \"guest\", \"src_ip\": \"10.0.0.200\", \"port\": 65172}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[2321]: Failed password for invalid user root from 10.0.0.200 port 4884 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 2321, \"event_type\": \"authentication_failure\", \"user\": \"root\", \"src_ip\": \"10.0.0.200\", \"port\": 4884}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[1319]: Failed password for invalid user paulo from 2001:db8::1 port 13752 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 1319, \"event_type\": \"authentication_failure\", \"user\": \"paulo\", \"src_ip\": \"2001:db8::1\", \"port\": 13752}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[3857]: Failed password for invalid user root from 2001:db8::1 port 39561 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 3857, \"event_type\": \"authentication_failure\", \"user\": \"root\", \"src_ip\": \"2001:db8::1\", \"port\": 39561}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[4233]: Failed password for invalid user deploy from 10.0.0.200 port 28152 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 4233, \"event_type\": \"authentication_failure\", \"user\": \"deploy\", \"src_ip\": \"10.0.0.200\", \"port\": 28152}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[4716]: Failed password for invalid user paulo from 10.0.0.200 port 2174 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 4716, \"event_type\": \"authentication_failure\", \"user\": \"paulo\", \"src_ip\": \"10.0.0.200\", \"port\": 2174}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[4394]: Failed password for invalid user guest from 2001:db8::1 port 41627 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 4394, \"event_type\": \"authentication_failure\", \"user\": \"guest\", \"src_ip\": \"2001:db8::1\", \"port\": 41627}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[5678]: Failed password for invalid user admin from 192.168.1.5 port 46307 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 5678, \"event_type\": \"authentication_failure\", \"user\": \"admin\", \"src_ip\": \"192.168.1.5\", \"port\": 46307}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[8730]: Failed password for invalid user admin from 10.0.0.200 port 23377 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 8730, \"event_type\": \"authentication_failure\", \"user\": \"admin\", \"src_ip\": \"10.0.0.200\", \"port\": 23377}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[9541]: Failed password for invalid user root from 2001:db8::1 port 2451 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 9541, \"event_type\": \"authentication_failure\", \"user\": \"root\", \"src_ip\": \"2001:db8::1\", \"port\": 2451}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[6168]: Failed password for invalid user deploy from 172.16.0.55 port 39030 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 6168, \"event_type\": \"authentication_failure\", \"user\": \"deploy\", \"src_ip\": \"172.16.0.55\", \"port\": 39030}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[1240]: Failed password for invalid user paulo from 2001:db8::1 port 21627 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 1240, \"event_type\": \"authentication_failure\", \"user\": \"paulo\", \"src_ip\": \"2001:db8::1\", \"port\": 21627}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[4424]: Failed password for invalid user deploy from 10.0.0.200 port 41746 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 4424, \"event_type\": \"authentication_failure\", \"user\": \"deploy\", \"src_ip\": \"10.0.0.200\", \"port\": 41746}"
+  },
+  {
+    "input": "Jan 28 12:00:00 firewall-1 sshd[3059]: Failed password for invalid user paulo from 10.0.0.200 port 49873 ssh2",
+    "actual_output": null,
+    "expected_output": "{\"timestamp\": \"Jan 28 12:00:00\", \"hostname\": \"firewall-1\", \"process\": \"sshd\", \"pid\": 3059, \"event_type\": \"authentication_failure\", \"user\": \"paulo\", \"src_ip\": \"10.0.0.200\", \"port\": 49873}"
+  }
+]

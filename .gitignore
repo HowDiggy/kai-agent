@@ -52,8 +52,6 @@ htmlcov/
 # Ignore raw OPNsense logs and training data
 data/*.log
 data/*.txt
-data/*.jsonl
-data/*.json
 *.log
 
 # --- Project Specific: Database & Docker Volumes ---

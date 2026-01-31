@@ -1,113 +1,107 @@
-import re
-from typing import List, Dict, Any
+import asyncio
+import httpx
+import json
 from pathlib import Path
+from pydantic import BaseModel, Field
+from pymilvus import connections, Collection
 from sentence_transformers import SentenceTransformer
-import torch
-from src.kai_agent.legacy_log_db import LogDatabase  # Import your Milvus adapter
 
-class LogIngestor:
-    """
-    Ingests raw syslog files and converts them into semantic embeddings.
-    """
+# --- CONFIGURATION ---
+VLLM_URL = "http://localhost:8005/v1/completions"
+MODEL_NAME = "kai-log-parser"
+LOG_FILE = Path("data/system.log")
+COLLECTION_NAME = "syslogs"
 
-    def __init__(self, model_name: str = "all-MiniLM-L6-v2") -> None:
-        """
-        Initialize with a lightweight embedding model.
-        
-        Args:
-            model_name: HuggingFace model ID. 'all-MiniLM-L6-v2' is efficient for CPU.
-        """
-        print(f"Loading embedding model: {model_name}...")
-        self.model = SentenceTransformer(model_name)
-        self.logs: List[Dict[str, Any]] = []
-        self.embeddings: torch.Tensor = None
+# --- INIT RESOURCES ---
+print("Loading Embedding Model...")
+# This runs locally on CPU (or GPU if available) to turn text into numbers
+embedder = SentenceTransformer('all-MiniLM-L6-v2')
 
-    def parse_file(self, file_path: str) -> int:
-        """
-        Parses an OPNsense/BSD syslog file (Tab-separated).
-        
-        Format: Timestamp <tab> Level <tab> Process <tab> Message
-        """
-        path = Path(file_path)
-        if not path.exists():
-            raise FileNotFoundError(f"Log file not found: {file_path}")
+print("Connecting to Milvus...")
+connections.connect("default", host="localhost", port="19530")
+collection = Collection(COLLECTION_NAME)
 
-        print(f"Parsing {file_path}...")
-        parsed_count = 0
-        
-        with open(path, 'r', encoding='utf-8', errors='ignore') as f:
+# --- SCHEMA ---
+class SyslogEntry(BaseModel):
+    timestamp: str = Field(description="e.g. 'Jan 28 12:00:00'")
+    hostname: str
+    process: str
+    pid: int
+    event_type: str
+    user: str
+    src_ip: str
+    port: int
+
+alpaca_template = """Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
+
+### Instruction:
+Parse the following syslog entry into structured JSON.
+Example Input: Jan 28 12:00:00 firewall-1 sshd[1234]: Failed password for invalid user admin from 1.2.3.4 port 5555 ssh2
+Example Response: {{"timestamp": "Jan 28 12:00:00", "hostname": "firewall-1", "process": "sshd", "pid": 1234, "event_type": "authentication_failure", "user": "admin", "src_ip": "1.2.3.4", "port": 5555}}
+
+### Input:
+{}
+
+### Response:
+"""
+
+async def parse_and_store(client: httpx.AsyncClient, line: str):
+    if not line.strip(): return
+
+    # 1. PARSE (Ask vLLM for Structure)
+    json_schema = SyslogEntry.model_json_schema()
+    try:
+        response = await client.post(
+            VLLM_URL,
+            json={
+                "model": MODEL_NAME,
+                "prompt": alpaca_template.format(line),
+                "max_tokens": 200,
+                "temperature": 0.0,
+                "guided_json": json_schema
+            },
+            timeout=30.0
+        )
+        response.raise_for_status()
+        parsed_data = json.loads(response.json()['choices'][0]['text'])
+    except Exception as e:
+        print(f"❌ Parse Error: {e}")
+        return
+
+    # 2. EMBED (Ask SentenceTransformer for Meaning)
+    # We embed the raw line to capture the full context
+    vector = embedder.encode(line).tolist()
+
+    # 3. STORE (Save to Milvus)
+    # Milvus inserts are column-based: [[vec], [time], [host]...]
+    insert_data = [
+        [vector],           
+        [parsed_data.get("timestamp", "unknown")],
+        [parsed_data.get("hostname", "unknown")],
+        [parsed_data.get("event_type", "unknown")],
+        [parsed_data.get("user", "unknown")],
+        [parsed_data.get("src_ip", "unknown")],
+        [line]              
+    ]
+    
+    collection.insert(insert_data)
+    print(f"✅ Stored: {parsed_data['user']} @ {parsed_data['src_ip']}")
+
+async def main():
+    if not LOG_FILE.exists():
+        print(f"Error: {LOG_FILE} not found!")
+        return
+
+    print(f"Reading logs from {LOG_FILE}...")
+    
+    async with httpx.AsyncClient() as client:
+        with open(LOG_FILE, "r") as f:
             for line in f:
-                parts = line.strip().split('\t')
-                if len(parts) < 4:
-                    continue # Skip malformed lines
-                
-                # Extract structured fields
-                timestamp = parts[0]
-                level = parts[1]
-                process = parts[2]
-                message = parts[3]
-
-                # We clean the message to remove variable noise (like PIDs [123])
-                # This helps the embedding model focus on the *type* of event.
-                clean_msg = re.sub(r'\[\d+\]', '', message).strip()
-
-                self.logs.append({
-                    "timestamp": timestamp,
-                    "level": level,
-                    "process": process,
-                    "original_message": message,
-                    "clean_message": clean_msg
-                })
-                parsed_count += 1
-        
-        print(f"Successfully parsed {parsed_count} logs.")
-        return parsed_count
-
-    def embed_logs(self) -> None:
-        """
-        Converts the 'clean_message' of all parsed logs into vectors.
-        """
-        if not self.logs:
-            print("No logs to embed.")
-            return
-
-        print("Generating embeddings (this may take a moment)...")
-        messages = [log["clean_message"] for log in self.logs]
-        
-        # This returns a Tensor of shape (num_logs, 384)
-        self.embeddings = self.model.encode(messages, convert_to_tensor=True)
-        print(f"Created embeddings with shape: {self.embeddings.shape}")
+                await parse_and_store(client, line.strip())
+    
+    # Commit to disk
+    collection.flush()
+    print("🚀 Ingestion Complete. Data flushed to Milvus.")
 
 if __name__ == "__main__":
-    # 1. Initialize Ingestor & Database Connection
-    ingestor = LogIngestor()
-    
-    # Connect to Milvus (assuming localhost since you are running this from the same machine or forwarding ports)
-    # If running inside a container, you might need "milvus-standalone" as host.
-    db = LogDatabase(host="192.168.1.42", port="19530")
-
-    # 2. Parse & Embed
-    ingestor.parse_file("./data/system.log")
-    ingestor.embed_logs()
-    
-    # 3. Store in Vector DB (Persistence!)
-    # We pass the vectors and the raw log dictionaries to be indexed
-    if ingestor.embeddings is not None:
-        db.upsert_logs(ingestor.embeddings, ingestor.logs)
-    
-        # 4. Search using the DB (Proof of Life)
-        query = "suspicious login attempt"
-        print(f"\nQuerying Milvus Database for: '{query}'")
-        
-        # We need to embed the query first using the same model
-        query_vec = ingestor.model.encode(query)
-        
-        # Search via the DB class
-        results = db.search(query_vec, top_k=3)
-        
-        print("-" * 50)
-        for res in results:
-            score = res['score']
-            payload = res['payload']
-            print(f"Score: {score:.4f} | Process: {payload.get('process', 'N/A')}")
-            print(f"Log: {payload.get('clean_message', 'N/A')}\n")
+    asyncio.run(main())

@@ -20,7 +20,7 @@ services:
       - "8005:8000" # Host 8005 -> Container 8000
     
     command: >
-      vllm serve /model
+      vllm serve paulojauregui/kai-log-parser
       --dtype float16
       --served-model-name kai-log-parser
       --max-model-len 2048
